@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 
 // ─── Datos estáticos y posiciones ───────────────────────────
 const fontStyle = "'Source Sans 3', 'Helvetica Neue', Arial, sans-serif";
@@ -180,6 +178,12 @@ export default function Home() {
     if (!hiddenRef.current) return;
     setGenerating(true);
     try {
+      // Imports dinámicos — solo se cargan en el browser, nunca en el servidor
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
+
       await new Promise((r) => setTimeout(r, 120));
 
       const canvas = await html2canvas(hiddenRef.current, {
